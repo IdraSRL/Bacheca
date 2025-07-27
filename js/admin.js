@@ -73,6 +73,40 @@ class AdminPanel {
             });
         }
 
+        // Action buttons event delegation
+        document.addEventListener('click', (e) => {
+            if (e.target.dataset.action) {
+                const action = e.target.dataset.action;
+                const id = e.target.dataset.id;
+                
+                switch (action) {
+                    case 'edit-user':
+                        this.showUserForm(id);
+                        break;
+                    case 'delete-user':
+                        this.deleteUser(id);
+                        break;
+                    case 'edit-category':
+                        this.showCategoryForm(id);
+                        break;
+                    case 'delete-category':
+                        this.deleteCategory(id);
+                        break;
+                    case 'edit-job':
+                        this.showJobForm(id);
+                        break;
+                    case 'delete-job':
+                        this.deleteJob(id);
+                        break;
+                    case 'edit-service':
+                        this.showServiceForm(id);
+                        break;
+                    case 'delete-service':
+                        this.deleteService(id);
+                        break;
+                }
+            }
+        });
         // Modal close handlers are handled by initUI()
     }
 
@@ -200,10 +234,10 @@ class AdminPanel {
                 </td>
                 <td>${formatDate(user.createdAt?.toDate?.() || user.createdAt)}</td>
                 <td>
-                    <button class="action-btn action-btn--edit" onclick="adminPanel.showUserForm('${user.id}')">
+                    <button class="action-btn action-btn--edit" data-action="edit-user" data-id="${user.id}">
                         Modifica
                     </button>
-                    <button class="action-btn action-btn--delete" onclick="adminPanel.deleteUser('${user.id}')">
+                    <button class="action-btn action-btn--delete" data-action="delete-user" data-id="${user.id}">
                         Elimina
                     </button>
                 </td>
@@ -232,10 +266,10 @@ class AdminPanel {
                     <div class="category-card__color" style="background-color: ${category.color}"></div>
                 </div>
                 <div class="category-card__actions">
-                    <button class="action-btn action-btn--edit" onclick="adminPanel.showCategoryForm('${category.id}')">
+                    <button class="action-btn action-btn--edit" data-action="edit-category" data-id="${category.id}">
                         Modifica
                     </button>
-                    <button class="action-btn action-btn--delete" onclick="adminPanel.deleteCategory('${category.id}')">
+                    <button class="action-btn action-btn--delete" data-action="delete-category" data-id="${category.id}">
                         Elimina
                     </button>
                 </div>
@@ -303,10 +337,10 @@ class AdminPanel {
                         </div>
                         
                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <button class="action-btn action-btn--edit" onclick="adminPanel.show${type === 'job' ? 'Job' : 'Service'}Form('${item.id}')">
+                            <button class="action-btn action-btn--edit" data-action="edit-${type}" data-id="${item.id}">
                                 Modifica
                             </button>
-                            <button class="action-btn action-btn--delete" onclick="adminPanel.delete${type === 'job' ? 'Job' : 'Service'}('${item.id}')">
+                            <button class="action-btn action-btn--delete" data-action="delete-${type}" data-id="${item.id}">
                                 Elimina
                             </button>
                         </div>
@@ -363,6 +397,13 @@ class AdminPanel {
             this.handleUserFormSubmit(e, isEdit, userId);
         });
 
+        // Add cancel button handler
+        const cancelBtn = modalBody.querySelector('.btn--secondary');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                hideModal('formModal');
+            });
+        }
         showModal('formModal');
     }
 
@@ -462,6 +503,13 @@ class AdminPanel {
             this.handleCategoryFormSubmit(e, isEdit, categoryId);
         });
 
+        // Add cancel button handler
+        const cancelBtn = modalBody.querySelector('.btn--secondary');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                hideModal('formModal');
+            });
+        }
         showModal('formModal');
     }
 
@@ -616,6 +664,13 @@ class AdminPanel {
             this.handleListingFormSubmit(e, isEdit, itemId, type);
         });
 
+        // Add cancel button handler
+        const cancelBtn = modalBody.querySelector('.btn--secondary');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                hideModal('formModal');
+            });
+        }
         showModal('formModal');
     }
 
@@ -887,10 +942,8 @@ class AdminPanel {
     }
 }
 
-// Create global instance for onclick handlers
-let adminPanel;
 
 // Initialize admin panel when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    adminPanel = new AdminPanel();
+    new AdminPanel();
 });
