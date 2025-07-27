@@ -144,6 +144,7 @@ class InitializationModule {
             const jobs = [
                 {
                     title: 'Ristrutturazione Bagno Completa',
+                    code: 'JOB001',
                     categoryId: edilizia?.id || categories[0]?.id,
                     description: 'Ristrutturazione completa di bagno con sostituzione sanitari, piastrelle e impianti.',
                     fullDescription: 'Offriamo un servizio completo di ristrutturazione bagno che include: demolizione dell\'esistente, rifacimento impianti idrico ed elettrico, posa nuove piastrelle, installazione sanitari di alta qualità, box doccia in cristallo, mobili bagno su misura. Lavoro eseguito da professionisti qualificati con garanzia di 2 anni.',
@@ -154,6 +155,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Pulizie Post-Ristrutturazione',
+                    code: 'JOB002',
                     categoryId: pulizie?.id || categories[1]?.id,
                     description: 'Servizio professionale di pulizie dopo lavori di ristrutturazione e cantiere.',
                     fullDescription: 'Specializzati nella pulizia post-cantiere e post-ristrutturazione. Il nostro team utilizza attrezzature professionali per rimuovere polvere di cantiere, residui di cemento, vernice e ogni tipo di sporco derivante dai lavori. Servizio che include pulizia vetri, pavimenti, sanitari, rimozione etichette e protezioni.',
@@ -164,6 +166,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Manutenzione Giardino Stagionale',
+                    code: 'JOB003',
                     categoryId: giardinaggio?.id || categories[2]?.id,
                     description: 'Servizio completo di manutenzione giardino per tutto l\'anno.',
                     fullDescription: 'Pacchetto annuale di manutenzione giardino che include: potatura piante e siepi, taglio erba settimanale, pulizia aiuole, trattamenti antiparassitari, concimazione stagionale, pulizia foglie autunnali, preparazione invernale delle piante. Servizio personalizzabile in base alle esigenze del cliente.',
@@ -174,6 +177,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Imbiancatura Appartamento',
+                    code: 'JOB004',
                     categoryId: edilizia?.id || categories[0]?.id,
                     description: 'Imbiancatura professionale di appartamento con materiali di qualità.',
                     fullDescription: 'Servizio di imbiancatura professionale che include: preparazione pareti, stuccatura e levigatura imperfezioni, applicazione primer, due mani di pittura lavabile di alta qualità. Possibilità di scelta colori personalizzati, effetti decorativi e carte da parati. Lavoro pulito e preciso con protezione di mobili e pavimenti.',
@@ -217,6 +221,7 @@ class InitializationModule {
             const services = [
                 {
                     title: 'Assistenza Tecnica Computer',
+                    code: 'SRV001',
                     categoryId: informatica?.id || categories[0]?.id,
                     description: 'Riparazione e manutenzione computer, installazione software e recupero dati.',
                     fullDescription: 'Servizio completo di assistenza informatica: riparazione hardware, pulizia virus e malware, installazione e configurazione software, backup e recupero dati, ottimizzazione prestazioni, configurazione reti domestiche e aziendali. Disponibili anche per assistenza remota e contratti di manutenzione.',
@@ -226,6 +231,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Installazione Lampadari e Punti Luce',
+                    code: 'SRV002',
                     categoryId: elettricita?.id || categories[1]?.id,
                     description: 'Installazione professionale di impianti di illuminazione e punti luce.',
                     fullDescription: 'Elettricista qualificato per installazione di lampadari, applique, faretti LED, sistemi di illuminazione smart, interruttori e prese elettriche. Servizio che include progettazione illuminotecnica, fornitura materiali certificati, installazione a norma e collaudo impianto.',
@@ -235,6 +241,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Riparazione Perdite e Scarichi',
+                    code: 'SRV003',
                     categoryId: idraulica?.id || categories[2]?.id,
                     description: 'Intervento rapido per riparazione perdite d\'acqua e problemi agli scarichi.',
                     fullDescription: 'Idraulico disponibile per emergenze 24/7. Specializzato in: riparazione perdite rubinetti e tubazioni, disostruzione scarichi e WC, sostituzione guarnizioni e cartucce, installazione sanitari, riparazione caldaie e scaldabagni, videoispezioni tubazioni. Intervento rapido con preventivo gratuito.',
@@ -244,6 +251,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Riparazione Elettrodomestici',
+                    code: 'SRV004',
                     categoryId: riparazioni?.id || categories[3]?.id,
                     description: 'Riparazione di lavatrici, lavastoviglie, frigoriferi e altri elettrodomestici.',
                     fullDescription: 'Centro assistenza specializzato nella riparazione di tutti gli elettrodomestici: lavatrici, asciugatrici, lavastoviglie, frigoriferi, forni, piani cottura, condizionatori. Tecnici qualificati, ricambi originali, garanzia sulle riparazioni. Sopralluogo gratuito e preventivo trasparente.',
@@ -253,6 +261,7 @@ class InitializationModule {
                 },
                 {
                     title: 'Montaggio Mobili IKEA',
+                    code: 'SRV005',
                     categoryId: riparazioni?.id || categories[3]?.id,
                     description: 'Servizio professionale di montaggio mobili e complementi d\'arredo.',
                     fullDescription: 'Esperti nel montaggio di mobili di ogni tipo: cucine componibili, armadi, librerie, scrivanie, letti, divani modulari. Servizio che include disimballaggio, montaggio professionale, posizionamento, livellamento e pulizia finale. Disponibili per montaggi complessi e su misura.',

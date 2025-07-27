@@ -200,13 +200,14 @@ export function createCard(item, type = 'job', isFavorite = false) {
     card.dataset.id = item.id;
     card.dataset.type = type;
 
-    const imageUrl = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+    const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'default.png';
 
     card.innerHTML = `
         <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
         <div class="card__content">
             <h3 class="card__title">${sanitizeHTML(item.title || '')}</h3>
             <p class="card__description">${truncateText(sanitizeHTML(item.description || ''), 80)}</p>
+            ${item.code ? `<div class="card__code">Cod: ${sanitizeHTML(item.code)}</div>` : ''}
             <div class="card__meta">
                 <span class="card__price">${formatPrice(item.price || 0)}</span>
                 <button class="card__favorite ${isFavorite ? 'card__favorite--active' : ''}" 
@@ -241,15 +242,19 @@ export function showItemDetails(item, type) {
 
     title.textContent = item.title || '';
 
-    const imageGallery = item.images && item.images.length > 0
-        ? item.images.map(img => `<img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" alt="${item.title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">`).join('')
-        : `<img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" alt="${item.title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">`;
+    // Create image carousel
+    const images = item.images && item.images.length > 0 ? item.images : ['default.png'];
+    const imageCarousel = createImageCarousel(images, item.title);
 
     body.innerHTML = `
-        <div class="modal-gallery">
-            ${imageGallery}
-        </div>
+        ${imageCarousel}
         <div class="modal-info">
+            ${item.code ? `
+            <div style="margin-bottom: 1rem;">
+                <strong>Codice:</strong> <span style="font-family: monospace; background: var(--color-neutral-200); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">${sanitizeHTML(item.code)}</span>
+            </div>
+            ` : ''}
+            
             <p><strong>Descrizione:</strong></p>
             <p>${sanitizeHTML(item.fullDescription || item.description || '')}</p>
             
@@ -269,16 +274,155 @@ export function showItemDetails(item, type) {
                 </div>
                 ` : ''}
             </div>
-            
-            <div style="margin-top: 2rem;">
-                <button class="btn btn--primary" onclick="window.location.href='mailto:info@example.com?subject=Interesse per: ${encodeURIComponent(item.title)}'">
-                    Contatta per info
-                </button>
-            </div>
         </div>
     `;
 
+    // Initialize carousel functionality
+    initImageCarousel();
+
     showModal('detailModal');
+}
+
+/**
+ * Create image carousel HTML
+ * @param {Array} images - Array of image URLs
+ * @param {string} title - Item title for alt text
+ * @returns {string} - Carousel HTML
+ */
+function createImageCarousel(images, title) {
+    if (images.length === 1) {
+        return `
+            <div class="modal-gallery">
+                <img src="${images[0]}" alt="${title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">
+            </div>
+        `;
+    }
+
+    return `
+        <div class="modal-gallery">
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-track" id="carouselTrack">
+                        ${images.map((img, index) => `
+                            <div class="carousel-slide ${index === 0 ? 'carousel-slide--active' : ''}">
+                                <img src="${img}" alt="${title}" loading="lazy">
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${images.length > 1 ? `
+                        <button class="carousel-btn carousel-btn--prev" id="carouselPrev">‹</button>
+                        <button class="carousel-btn carousel-btn--next" id="carouselNext">›</button>
+                    ` : ''}
+                </div>
+                ${images.length > 1 ? `
+                    <div class="carousel-indicators">
+                        ${images.map((_, index) => `
+                            <button class="carousel-indicator ${index === 0 ? 'carousel-indicator--active' : ''}" 
+                                    data-slide="${index}"></button>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Initialize image carousel functionality
+ */
+function initImageCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const prevBtn = document.getElementById('carouselPrev');
+    const nextBtn = document.getElementById('carouselNext');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    
+    if (!track) return;
+    
+    const slides = track.querySelectorAll('.carousel-slide');
+    let currentSlide = 0;
+    
+    function updateCarousel() {
+        // Update slides
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('carousel-slide--active', index === currentSlide);
+        });
+        
+        // Update indicators
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('carousel-indicator--active', index === currentSlide);
+        });
+        
+        // Update track position
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        updateCarousel();
+    }
+    
+    function goToSlide(index) {
+        currentSlide = index;
+        updateCarousel();
+    }
+    
+    // Event listeners
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        const modal = document.querySelector('.modal--active');
+        if (!modal) return;
+        
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevSlide();
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextSlide();
+        }
+    });
+    
+    // Touch/swipe support
+    let startX = 0;
+    let isDragging = false;
+    
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+    });
+    
+    track.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+    });
+    
+    track.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        
+        const endX = e.changedTouches[0].clientX;
+        const diffX = startX - endX;
+        
+        if (Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+        
+        isDragging = false;
+    });
 }
 
 /**

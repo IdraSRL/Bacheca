@@ -316,13 +316,14 @@ class AdminPanel {
 
         container.innerHTML = items.map(item => {
             const category = this.categories.find(cat => cat.id === item.categoryId);
-            const imageUrl = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+            const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'default.png';
 
             return `
                 <div class="card">
                     <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
                     <div class="card__content">
                         <h3 class="card__title">${item.title}</h3>
+                        ${item.code ? `<div class="card__code">Cod: ${item.code}</div>` : ''}
                         <p class="card__description">${item.description?.substring(0, 80)}...</p>
                         
                         <div style="margin: 1rem 0;">
@@ -591,6 +592,12 @@ class AdminPanel {
                 </div>
                 
                 <div class="form-group">
+                    <label for="listingCode" class="form-label">Codice Identificativo</label>
+                    <input type="text" id="listingCode" class="form-input" value="${item?.code || ''}" 
+                           placeholder="Es: JOB001, SRV001" required>
+                </div>
+                
+                <div class="form-group">
                     <label for="listingCategory" class="form-label">Categoria</label>
                     <select id="listingCategory" class="form-select" required>
                         <option value="">Seleziona categoria</option>
@@ -712,10 +719,18 @@ class AdminPanel {
         const preview = document.getElementById('imagePreview');
         if (!preview) return;
 
-        // Clear existing preview
-        preview.innerHTML = '';
+        // Check current number of images
+        const existingImages = preview.querySelectorAll('.image-preview__item');
+        const maxImages = 10;
+        
+        if (existingImages.length >= maxImages) {
+            showToast(`Massimo ${maxImages} immagini consentite`, 'warning');
+            return;
+        }
 
-        for (const file of files) {
+        const filesToProcess = Array.from(files).slice(0, maxImages - existingImages.length);
+        
+        for (const file of filesToProcess) {
             if (!file.type.startsWith('image/')) {
                 showToast(`${file.name} non è un'immagine valida`, 'warning');
                 continue;
@@ -745,8 +760,18 @@ class AdminPanel {
             previewItem.appendChild(img);
             previewItem.appendChild(removeBtn);
             previewItem.dataset.file = file.name;
+            previewItem.dataset.fileObject = JSON.stringify({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                lastModified: file.lastModified
+            });
             
             preview.appendChild(previewItem);
+        }
+        
+        if (filesToProcess.length < files.length) {
+            showToast(`Aggiunte solo ${filesToProcess.length} immagini (limite ${maxImages})`, 'warning');
         }
     }
 
@@ -786,6 +811,7 @@ class AdminPanel {
         
         // Get form data
         const title = document.getElementById('listingTitle').value.trim();
+        const code = document.getElementById('listingCode').value.trim();
         const categoryId = document.getElementById('listingCategory').value;
         const description = document.getElementById('listingDescription').value.trim();
         const fullDescription = document.getElementById('listingFullDescription').value.trim();
@@ -794,11 +820,21 @@ class AdminPanel {
         const surface = type === 'job' ? parseFloat(document.getElementById('listingSurface').value) || null : null;
 
         // Validation
-        if (!title || !categoryId || !description || !price || !location) {
+        if (!title || !code || !categoryId || !description || !price || !location) {
             showToast('Compila tutti i campi obbligatori', 'warning');
             return;
         }
 
+        // Check if code already exists (only for new items or if code changed)
+        if (!isEdit || (isEdit && code !== (type === 'job' ? this.jobs : this.services).find(i => i.id === itemId)?.code)) {
+            const allItems = [...this.jobs, ...this.services];
+            const codeExists = allItems.some(item => item.code === code && item.id !== itemId);
+            
+            if (codeExists) {
+                showToast('Codice già esistente, scegli un codice diverso', 'warning');
+                return;
+            }
+        }
         toggleButtonLoading(submitBtn, true);
 
         try {
@@ -807,6 +843,7 @@ class AdminPanel {
 
             const listingData = {
                 title,
+                code,
                 categoryId,
                 description,
                 fullDescription,
@@ -856,9 +893,25 @@ class AdminPanel {
     }
 
     async processImages() {
-        // For now, return empty array since we're using placeholder images
-        // In a real implementation, you would handle file uploads here
-        return [];
+        const preview = document.getElementById('imagePreview');
+        if (!preview) return [];
+        
+        const imageItems = preview.querySelectorAll('.image-preview__item');
+        const images = [];
+        
+        imageItems.forEach(item => {
+            if (item.dataset.existing) {
+                // Existing image
+                images.push(item.dataset.existing);
+            } else if (item.dataset.file) {
+                // New image - in a real implementation, you would upload to server
+                // For now, we'll use a placeholder name
+                const fileName = `uploaded_${Date.now()}_${item.dataset.file}`;
+                images.push(fileName);
+            }
+        });
+        
+        return images;
     }
 
     // Removed uploadImage method since we're not using PHP uploads
