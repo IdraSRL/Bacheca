@@ -340,34 +340,31 @@ class AdminPanel {
 
         container.innerHTML = items.map(item => {
             const category = this.categories.find(cat => cat.id === item.categoryId);
-            const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'default.png';
+            const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
 
             return `
                 <div class="card">
                     <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
                     <div class="card__content">
-                        <h3 class="card__title">${item.title}</h3>
                         ${item.code ? `<div class="card__code">Cod: ${item.code}</div>` : ''}
-                        <p class="card__description">${item.description?.substring(0, 80)}...</p>
+                        <h3 class="card__title">${item.title}</h3>
+                        <p class="card__description">${item.description?.substring(0, 100) || ''}${item.description?.length > 100 ? '...' : ''}</p>
                         
-                        <div style="margin: 1rem 0;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span><strong>Prezzo:</strong> €${item.price}</span>
-                                ${type === 'job' && item.surface ? `<span><strong>Superficie:</strong> ${item.surface} m²</span>` : ''}
+                        <div class="card__meta">
+                            <div class="card__info">
+                                <div class="card__price">€${item.price}</div>
+                                <div class="card__location">${item.location || 'Non specificato'}</div>
+                                ${type === 'job' && item.surface ? `<div class="card__surface">${item.surface} m²</div>` : ''}
+                                ${category ? `<div class="card__category" style="background-color: ${category.color}20; color: ${category.color}; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-top: 0.5rem;">${category.name}</div>` : ''}
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span><strong>Luogo:</strong> ${item.location}</span>
-                                ${category ? `<span class="badge" style="background-color: ${category.color}20; color: ${category.color};">${category.name}</span>` : ''}
+                            <div class="card__actions">
+                                <button class="btn btn--small btn--secondary" data-action="edit-${type}" data-id="${item.id}">
+                                    Modifica
+                                </button>
+                                <button class="btn btn--small btn--error" data-action="delete-${type}" data-id="${item.id}">
+                                    Elimina
+                                </button>
                             </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <button class="action-btn action-btn--edit" data-action="edit-${type}" data-id="${item.id}">
-                                Modifica
-                            </button>
-                            <button class="action-btn action-btn--delete" data-action="delete-${type}" data-id="${item.id}">
-                                Elimina
-                            </button>
                         </div>
                     </div>
                 </div>
