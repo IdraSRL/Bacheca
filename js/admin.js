@@ -591,13 +591,17 @@ class AdminPanel {
             };
 
             // Send email via PHP backend
-            const response = await fetch('php/send-newsletter.php', {
+            const response = await fetch('./php/send-newsletter.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(emailData)
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const result = await response.json();
 
