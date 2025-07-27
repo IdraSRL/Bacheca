@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente - Bacheca Annunci Pro</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="dashboard-page">
+    <header class="header">
+        <div class="header__content">
+            <div class="header__brand">
+                <h1 class="header__title">Bacheca Annunci Pro</h1>
+            </div>
+            
+            <nav class="header__nav">
+                <div class="favorites-badge" id="favoritesBadge">
+                    <span class="favorites-badge__icon">♥</span>
+                    <span class="favorites-badge__count" id="favoritesCount">0</span>
+                </div>
+                
+                <button class="btn btn--secondary" id="logoutBtn">Logout</button>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="filters-section">
+            <div class="filters-section__content">
+                <div class="search-bar">
+                    <input type="text" class="search-bar__input" id="searchInput" placeholder="Cerca annunci...">
+                    <button class="search-bar__button" id="searchBtn">
+                        <span class="search-bar__icon">🔍</span>
+                    </button>
+                </div>
+                
+                <div class="filters">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">Tutte le categorie</option>
+                    </select>
+                    
+                    <select class="filter-select" id="priceFilter">
+                        <option value="">Tutti i prezzi</option>
+                        <option value="0-500">€0 - €500</option>
+                        <option value="500-1000">€500 - €1000</option>
+                        <option value="1000-2000">€1000 - €2000</option>
+                        <option value="2000+">€2000+</option>
+                    </select>
+                    
+                    <select class="filter-select" id="surfaceFilter">
+                        <option value="">Tutte le superfici</option>
+                        <option value="0-50">0-50 m²</option>
+                        <option value="50-100">50-100 m²</option>
+                        <option value="100-200">100-200 m²</option>
+                        <option value="200+">200+ m²</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="tab-navigation">
+                <button class="tab-nav__button tab-nav__button--active" data-tab="jobs">
+                    Offerte di Lavoro
+                </button>
+                <button class="tab-nav__button" data-tab="services">
+                    Servizi Offerti
+                </button>
+            </div>
+            
+            <div class="tab-content">
+                <div class="tab-panel tab-panel--active" id="jobsPanel">
+                    <div class="category-tabs" id="jobCategoryTabs"></div>
+                    <div class="listings-grid" id="jobsGrid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+                
+                <div class="tab-panel" id="servicesPanel">
+                    <div class="category-tabs" id="serviceCategoryTabs"></div>
+                    <div class="listings-grid" id="servicesGrid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal per dettagli annuncio -->
+    <div class="modal" id="detailModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 class="modal__title" id="modalTitle"></h2>
+                <button class="modal__close" id="modalClose">×</button>
+            </div>
+            
+            <div class="modal__body" id="modalBody">
+                <!-- Contenuto dinamico -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

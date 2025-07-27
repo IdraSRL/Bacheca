@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bacheca Annunci Pro - Login</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-card__header">
+                <h1 class="auth-card__title">Bacheca Annunci Pro</h1>
+                <p class="auth-card__subtitle">Accedi al tuo account</p>
+            </div>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                
+                <button type="submit" class="btn btn--primary btn--full">
+                    <span class="btn__text">Accedi</span>
+                    <div class="spinner spinner--hidden" id="loginSpinner"></div>
+                </button>
+            </form>
+            
+            <div class="auth-card__footer">
+                <p class="auth-card__help">
+                    <a href="init.html" class="link">Inizializza sistema con dati di test</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

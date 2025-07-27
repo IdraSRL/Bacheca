@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello Admin - Bacheca Annunci Pro</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-page">
+    <header class="header">
+        <div class="header__content">
+            <div class="header__brand">
+                <h1 class="header__title">Pannello Amministrazione</h1>
+            </div>
+            
+            <nav class="header__nav">
+                <button class="btn btn--secondary" id="logoutBtn">Logout</button>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="admin-sidebar">
+            <nav class="admin-nav">
+                <button class="admin-nav__item admin-nav__item--active" data-section="users">
+                    <span class="admin-nav__icon">👥</span>
+                    Utenti
+                </button>
+                <button class="admin-nav__item" data-section="categories">
+                    <span class="admin-nav__icon">📂</span>
+                    Categorie
+                </button>
+                <button class="admin-nav__item" data-section="jobs">
+                    <span class="admin-nav__icon">💼</span>
+                    Offerte di Lavoro
+                </button>
+                <button class="admin-nav__item" data-section="services">
+                    <span class="admin-nav__icon">🛠️</span>
+                    Servizi Offerti
+                </button>
+            </nav>
+        </div>
+        
+        <div class="admin-content">
+            <!-- Sezione Utenti -->
+            <div class="admin-section admin-section--active" id="usersSection">
+                <div class="admin-section__header">
+                    <h2 class="admin-section__title">Gestione Utenti</h2>
+                    <button class="btn btn--primary" id="addUserBtn">Aggiungi Utente</button>
+                </div>
+                
+                <div class="admin-table-container">
+                    <table class="admin-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Ruolo</th>
+                                <th>Data Creazione</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Contenuto dinamico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sezione Categorie -->
+            <div class="admin-section" id="categoriesSection">
+                <div class="admin-section__header">
+                    <h2 class="admin-section__title">Gestione Categorie</h2>
+                    <button class="btn btn--primary" id="addCategoryBtn">Aggiungi Categoria</button>
+                </div>
+                
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Contenuto dinamico -->
+                </div>
+            </div>
+            
+            <!-- Sezione Offerte di Lavoro -->
+            <div class="admin-section" id="jobsSection">
+                <div class="admin-section__header">
+                    <h2 class="admin-section__title">Gestione Offerte di Lavoro</h2>
+                    <button class="btn btn--primary" id="addJobBtn">Aggiungi Offerta</button>
+                </div>
+                
+                <div class="admin-controls">
+                    <input type="text" class="search-input" id="jobSearchInput" placeholder="Cerca offerte...">
+                    <select class="filter-select" id="jobCategoryFilter">
+                        <option value="">Tutte le categorie</option>
+                    </select>
+                </div>
+                
+                <div class="listings-grid" id="adminJobsGrid">
+                    <!-- Contenuto dinamico -->
+                </div>
+            </div>
+            
+            <!-- Sezione Servizi -->
+            <div class="admin-section" id="servicesSection">
+                <div class="admin-section__header">
+                    <h2 class="admin-section__title">Gestione Servizi</h2>
+                    <button class="btn btn--primary" id="addServiceBtn">Aggiungi Servizio</button>
+                </div>
+                
+                <div class="admin-controls">
+                    <input type="text" class="search-input" id="serviceSearchInput" placeholder="Cerca servizi...">
+                    <select class="filter-select" id="serviceCategoryFilter">
+                        <option value="">Tutte le categorie</option>
+                    </select>
+                </div>
+                
+                <div class="listings-grid" id="adminServicesGrid">
+                    <!-- Contenuto dinamico -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal per form -->
+    <div class="modal" id="formModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 class="modal__title" id="formModalTitle"></h2>
+                <button class="modal__close" id="formModalClose">×</button>
+            </div>
+            
+            <div class="modal__body" id="formModalBody">
+                <!-- Contenuto dinamico -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

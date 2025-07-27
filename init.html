@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inizializzazione Sistema - Bacheca Annunci Pro</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/init.css">
+</head>
+<body class="init-page">
+    <div class="init-container">
+        <div class="init-card">
+            <div class="init-card__header">
+                <h1 class="init-card__title">Inizializzazione Sistema</h1>
+                <p class="init-card__subtitle">Configurazione automatica con dati di test</p>
+            </div>
+            
+            <div class="init-steps" id="initSteps">
+                <div class="init-step" data-step="users">
+                    <div class="init-step__icon">👥</div>
+                    <div class="init-step__content">
+                        <h3 class="init-step__title">Creazione Utenti</h3>
+                        <p class="init-step__description">Creazione utenti admin e cliente di test</p>
+                        <div class="init-step__status" id="usersStatus">In attesa...</div>
+                    </div>
+                </div>
+                
+                <div class="init-step" data-step="categories">
+                    <div class="init-step__icon">📂</div>
+                    <div class="init-step__content">
+                        <h3 class="init-step__title">Creazione Categorie</h3>
+                        <p class="init-step__description">Inserimento categorie per lavoro e servizi</p>
+                        <div class="init-step__status" id="categoriesStatus">In attesa...</div>
+                    </div>
+                </div>
+                
+                <div class="init-step" data-step="jobs">
+                    <div class="init-step__icon">💼</div>
+                    <div class="init-step__content">
+                        <h3 class="init-step__title">Offerte di Lavoro</h3>
+                        <p class="init-step__description">Inserimento offerte di lavoro di esempio</p>
+                        <div class="init-step__status" id="jobsStatus">In attesa...</div>
+                    </div>
+                </div>
+                
+                <div class="init-step" data-step="services">
+                    <div class="init-step__icon">🛠️</div>
+                    <div class="init-step__content">
+                        <h3 class="init-step__title">Servizi Offerti</h3>
+                        <p class="init-step__description">Inserimento servizi di esempio</p>
+                        <div class="init-step__status" id="servicesStatus">In attesa...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="init-actions">
+                <button class="btn btn--primary btn--full" id="initBtn">
+                    <span class="btn__text">Inizia Configurazione</span>
+                    <div class="spinner spinner--hidden" id="initSpinner"></div>
+                </button>
+            </div>
+            
+            <div class="init-credentials" id="initCredentials" style="display: none;">
+                <h3>Credenziali di Test Create:</h3>
+                <div class="credentials-list">
+                    <div class="credential-item">
+                        <strong>Admin:</strong> admin / admin123
+                    </div>
+                    <div class="credential-item">
+                        <strong>Cliente:</strong> cliente1 / cliente123
+                    </div>
+                </div>
+                
+                <div class="init-actions">
+                    <a href="index.html" class="btn btn--success">Vai al Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script type="module" src="js/init.js"></script>
+</body>
+</html>
