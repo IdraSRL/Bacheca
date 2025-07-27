@@ -188,7 +188,7 @@ class FavoritesModule {
                             ${favoriteItems.map(item => `
                                 <div class="favorite-item" data-id="${item.id}" data-type="${item.type}">
                                     <div class="favorite-item__image">
-                                        <img src="${item.images && item.images.length > 0 ? `uploads/${item.images[0]}` : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg'}" 
+                                        <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" 
                                              alt="${item.title}" loading="lazy">
                                     </div>
                                     <div class="favorite-item__content">

@@ -200,9 +200,7 @@ export function createCard(item, type = 'job', isFavorite = false) {
     card.dataset.id = item.id;
     card.dataset.type = type;
 
-    const imageUrl = item.images && item.images.length > 0 
-        ? `uploads/${item.images[0]}` 
-        : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+    const imageUrl = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
 
     card.innerHTML = `
         <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
@@ -244,7 +242,7 @@ export function showItemDetails(item, type) {
     title.textContent = item.title || '';
 
     const imageGallery = item.images && item.images.length > 0
-        ? item.images.map(img => `<img src="uploads/${img}" alt="${item.title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">`).join('')
+        ? item.images.map(img => `<img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" alt="${item.title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">`).join('')
         : `<img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" alt="${item.title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">`;
 
     body.innerHTML = `

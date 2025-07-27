@@ -282,9 +282,7 @@ class AdminPanel {
 
         container.innerHTML = items.map(item => {
             const category = this.categories.find(cat => cat.id === item.categoryId);
-            const imageUrl = item.images && item.images.length > 0 
-                ? `uploads/${item.images[0]}` 
-                : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+            const imageUrl = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
 
             return `
                 <div class="card">
@@ -400,7 +398,7 @@ class AdminPanel {
                 const { hashPassword } = await import('./utils/auth.js');
                 const hashedPassword = await hashPassword(password);
                 
-                const newUserId = await firebaseService.add('users', {
+                const newUserId = await firebaseService.createUser({
                     username,
                     role,
                     password: hashedPassword
@@ -803,57 +801,12 @@ class AdminPanel {
     }
 
     async processImages() {
-        const preview = document.getElementById('imagePreview');
-        if (!preview) return [];
-
-        const images = [];
-        const previewItems = preview.querySelectorAll('.image-preview__item');
-
-        for (const item of previewItems) {
-            if (item.dataset.existing) {
-                // Existing image
-                images.push(item.dataset.existing);
-            } else if (item.dataset.file) {
-                // New image - need to upload
-                const fileInput = document.getElementById('listingImages');
-                const file = Array.from(fileInput.files).find(f => f.name === item.dataset.file);
-                
-                if (file) {
-                    const uploadedName = await this.uploadImage(file);
-                    if (uploadedName) {
-                        images.push(uploadedName);
-                    }
-                }
-            }
-        }
-
-        return images;
+        // For now, return empty array since we're using placeholder images
+        // In a real implementation, you would handle file uploads here
+        return [];
     }
 
-    async uploadImage(file) {
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const response = await fetch('php/upload.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                return result.filename;
-            } else {
-                showToast(`Errore caricamento ${file.name}: ${result.error}`, 'error');
-                return null;
-            }
-        } catch (error) {
-            console.error('Upload error:', error);
-            showToast(`Errore caricamento ${file.name}`, 'error');
-            return null;
-        }
-    }
+    // Removed uploadImage method since we're not using PHP uploads
 
     // Delete Methods
     async deleteUser(userId) {

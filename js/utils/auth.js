@@ -1,4 +1,5 @@
 import sessionService from '../services/session.js';
+import firebaseService from '../services/firebase.js';
 
 /**
  * Authentication Utilities
@@ -18,41 +19,68 @@ export async function hashPassword(password) {
 }
 
 /**
- * Login user with credentials
+ * Generate a simple JWT-like token
+ * @param {Object} payload - Token payload
+ * @returns {string} - Generated token
+ */
+function generateToken(payload) {
+    const header = btoa(JSON.stringify({ typ: 'JWT', alg: 'none' }));
+    const payloadStr = btoa(JSON.stringify({
+        ...payload,
+        exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+    }));
+    return `${header}.${payloadStr}.signature`;
+}
+
+/**
+ * Login user with credentials using Firebase
  * @param {string} username - Username
  * @param {string} password - Plain text password
  * @returns {Promise<Object>} - Login result
  */
 export async function login(username, password) {
     try {
-        // Hash the password
+        // Hash the password for comparison
         const hashedPassword = await hashPassword(password);
 
-        // Send login request to PHP backend
-        const response = await fetch('php/auth.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'login',
-                username,
-                password: hashedPassword
-            })
+        // Get user from Firebase
+        const user = await firebaseService.getUserByUsername(username);
+
+        if (!user) {
+            return { success: false, error: 'Credenziali non valide' };
+        }
+
+        // Compare hashed passwords
+        if (user.password !== hashedPassword) {
+            return { success: false, error: 'Credenziali non valide' };
+        }
+
+        // Generate token
+        const token = generateToken({
+            username: user.username,
+            role: user.role,
+            userId: user.id
         });
 
-        const result = await response.json();
+        // Save session
+        sessionService.saveSession(token, {
+            id: user.id,
+            username: user.username,
+            role: user.role
+        });
 
-        if (result.success) {
-            // Save session
-            sessionService.saveSession(result.token, result.user);
-            return { success: true, user: result.user };
-        } else {
-            return { success: false, error: result.error || 'Login failed' };
-        }
+        return { 
+            success: true, 
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            }
+        };
+
     } catch (error) {
         console.error('Login error:', error);
-        return { success: false, error: 'Network error. Please try again.' };
+        return { success: false, error: 'Errore durante il login. Riprova.' };
     }
 }
 

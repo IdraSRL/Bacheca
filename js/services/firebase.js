@@ -177,7 +177,17 @@ class FirebaseService {
     }
 
     async createUser(userData) {
-        return await this.add('users', userData);
+        try {
+            const docRef = await addDoc(this.users, {
+                ...userData,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+            });
+            return docRef.id;
+        } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+        }
     }
 
     async getAllUsers() {
