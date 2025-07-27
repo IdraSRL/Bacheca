@@ -522,3 +522,27 @@
 .link:hover {
     color: var(--color-primary-600);
 }
+
+@media (max-width: 768px) {
+    .carousel-slide img {
+        height: 200px;
+    }
+    
+    .carousel-btn {
+        width: var(--space-10);
+        height: var(--space-10);
+        font-size: var(--font-size-xl);
+    }
+    
+    .carousel-btn--prev {
+        left: var(--space-2);
+    }
+    
+    .carousel-btn--next {
+        right: var(--space-2);
+    }
+    
+    .listings-grid {
+        grid-template-columns: 1fr;
+    }
+}
