@@ -131,6 +131,24 @@ class AdminPanel {
         if (addServiceBtn) {
             addServiceBtn.addEventListener('click', () => this.showServiceForm());
         }
+
+        // Send email button
+        const sendEmailBtn = document.getElementById('sendEmailBtn');
+        if (sendEmailBtn) {
+            sendEmailBtn.addEventListener('click', () => this.showEmailModal());
+        }
+
+        // Email form
+        const emailForm = document.getElementById('emailForm');
+        if (emailForm) {
+            emailForm.addEventListener('submit', (e) => this.handleEmailFormSubmit(e));
+        }
+
+        // Email cancel button
+        const emailCancelBtn = document.getElementById('emailCancelBtn');
+        if (emailCancelBtn) {
+            emailCancelBtn.addEventListener('click', () => hideModal('emailModal'));
+        }
     }
 
     initSearchHandlers() {
@@ -231,6 +249,12 @@ class AdminPanel {
                     <span class="badge badge--${user.role === 'admin' ? 'primary' : 'success'}">
                         ${user.role === 'admin' ? 'Admin' : 'Cliente'}
                     </span>
+                </td>
+                <td>
+                    ${user.emailConsent ? 
+                        `<span class="badge badge--success">✓ ${user.email}</span>` : 
+                        '<span class="badge">Nessun consenso</span>'
+                    }
                 </td>
                 <td>${formatDate(user.createdAt?.toDate?.() || user.createdAt)}</td>
                 <td>
@@ -376,6 +400,18 @@ class AdminPanel {
                     </select>
                 </div>
                 
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="userEmailConsent" ${user?.emailConsent ? 'checked' : ''} style="margin-right: 0.5rem;">
+                        Consenso email per nuove offerte
+                    </label>
+                </div>
+                
+                <div class="form-group" id="userEmailGroup" style="display: ${user?.emailConsent ? 'block' : 'none'};">
+                    <label for="userEmailAddress" class="form-label">Email</label>
+                    <input type="email" id="userEmailAddress" class="form-input" value="${user?.email || ''}">
+                </div>
+                
                 ${!isEdit ? `
                 <div class="form-group">
                     <label for="userPassword" class="form-label">Password</label>
@@ -398,6 +434,18 @@ class AdminPanel {
             this.handleUserFormSubmit(e, isEdit, userId);
         });
 
+        // Email consent checkbox handler
+        const emailConsent = document.getElementById('userEmailConsent');
+        const emailGroup = document.getElementById('userEmailGroup');
+        if (emailConsent && emailGroup) {
+            emailConsent.addEventListener('change', (e) => {
+                emailGroup.style.display = e.target.checked ? 'block' : 'none';
+                if (!e.target.checked) {
+                    document.getElementById('userEmailAddress').value = '';
+                }
+            });
+        }
+
         // Add cancel button handler
         const cancelBtn = modalBody.querySelector('.btn--secondary');
         if (cancelBtn) {
@@ -416,6 +464,8 @@ class AdminPanel {
         
         const username = document.getElementById('userUsername').value.trim();
         const role = document.getElementById('userRole').value;
+        const emailConsent = document.getElementById('userEmailConsent').checked;
+        const emailAddress = document.getElementById('userEmailAddress').value.trim();
         const password = !isEdit ? document.getElementById('userPassword').value.trim() : null;
 
         if (!username || (!isEdit && !password)) {
@@ -423,17 +473,34 @@ class AdminPanel {
             return;
         }
 
+        if (emailConsent && !emailAddress) {
+            showToast('Inserisci un indirizzo email se attivi il consenso', 'warning');
+            return;
+        }
+
+        if (emailConsent && !this.isValidEmail(emailAddress)) {
+            showToast('Inserisci un indirizzo email valido', 'warning');
+            return;
+        }
+
         toggleButtonLoading(submitBtn, true);
 
         try {
+            const userData = { 
+                username, 
+                role, 
+                emailConsent, 
+                email: emailConsent ? emailAddress : '' 
+            };
+
             if (isEdit) {
-                await firebaseService.update('users', userId, { username, role });
+                await firebaseService.update('users', userId, userData);
                 showToast('Utente aggiornato con successo', 'success');
                 
                 // Update local data
                 const userIndex = this.users.findIndex(u => u.id === userId);
                 if (userIndex !== -1) {
-                    this.users[userIndex] = { ...this.users[userIndex], username, role };
+                    this.users[userIndex] = { ...this.users[userIndex], ...userData };
                 }
             } else {
                 // Hash password before saving
@@ -441,8 +508,7 @@ class AdminPanel {
                 const hashedPassword = await hashPassword(password);
                 
                 const newUserId = await firebaseService.createUser({
-                    username,
-                    role,
+                    ...userData,
                     password: hashedPassword
                 });
 
@@ -451,8 +517,7 @@ class AdminPanel {
                 // Add to local data
                 this.users.unshift({
                     id: newUserId,
-                    username,
-                    role,
+                    ...userData,
                     createdAt: new Date()
                 });
             }
@@ -466,6 +531,94 @@ class AdminPanel {
         } finally {
             toggleButtonLoading(submitBtn, false);
         }
+    }
+
+    async showEmailModal() {
+        try {
+            // Get users with email consent
+            const usersWithConsent = await firebaseService.getUsersWithEmailConsent();
+            
+            const recipientCount = document.getElementById('recipientCount');
+            if (recipientCount) {
+                recipientCount.textContent = usersWithConsent.length;
+            }
+
+            if (usersWithConsent.length === 0) {
+                showToast('Nessun utente ha dato il consenso per ricevere email', 'warning');
+                return;
+            }
+
+            showModal('emailModal');
+            
+        } catch (error) {
+            console.error('Error loading email recipients:', error);
+            showToast('Errore nel caricamento dei destinatari', 'error');
+        }
+    }
+
+    async handleEmailFormSubmit(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const message = document.getElementById('emailMessage').value.trim();
+
+        if (!message) {
+            showToast('Inserisci il messaggio email', 'warning');
+            return;
+        }
+
+        toggleButtonLoading(submitBtn, true);
+
+        try {
+            // Get users with email consent
+            const usersWithConsent = await firebaseService.getUsersWithEmailConsent();
+            
+            if (usersWithConsent.length === 0) {
+                showToast('Nessun utente ha dato il consenso per ricevere email', 'warning');
+                return;
+            }
+
+            // Prepare email data
+            const emailData = {
+                recipients: usersWithConsent.map(user => ({
+                    email: user.email,
+                    username: user.username
+                })),
+                subject: 'Nuove offerte disponibili',
+                message: message,
+                dashboardUrl: window.location.origin + '/dashboard.html'
+            };
+
+            // Send email via PHP backend
+            const response = await fetch('php/send-newsletter.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast(`Email inviate con successo a ${result.sent} destinatari`, 'success');
+                hideModal('emailModal');
+            } else {
+                showToast(result.error || 'Errore nell\'invio delle email', 'error');
+            }
+            
+        } catch (error) {
+            console.error('Error sending emails:', error);
+            showToast('Errore nell\'invio delle email', 'error');
+        } finally {
+            toggleButtonLoading(submitBtn, false);
+        }
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
     showCategoryForm(categoryId = null) {

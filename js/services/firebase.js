@@ -180,6 +180,8 @@ class FirebaseService {
         try {
             const docRef = await addDoc(this.users, {
                 ...userData,
+                emailConsent: false,
+                email: '',
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp()
             });
@@ -192,6 +194,39 @@ class FirebaseService {
 
     async getAllUsers() {
         return await this.getAll('users', 'createdAt', 'desc');
+    }
+
+    async getUsersWithEmailConsent() {
+        try {
+            const q = query(
+                collection(this.db, 'users'),
+                where('emailConsent', '==', true),
+                where('email', '!=', '')
+            );
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } catch (error) {
+            console.error('Error getting users with email consent:', error);
+            throw error;
+        }
+    }
+
+    async updateUserEmailSettings(userId, emailConsent, email = '') {
+        try {
+            const docRef = doc(this.db, 'users', userId);
+            await updateDoc(docRef, {
+                emailConsent,
+                email: emailConsent ? email : '',
+                updatedAt: serverTimestamp()
+            });
+            return true;
+        } catch (error) {
+            console.error('Error updating user email settings:', error);
+            throw error;
+        }
     }
 
     /**

@@ -23,6 +23,7 @@
                     <span class="favorites-badge__count" id="favoritesCount">0</span>
                 </div>
                 
+                <button class="btn btn--secondary" id="profileBtn">Profilo</button>
                 <button class="btn btn--secondary" id="logoutBtn">Logout</button>
             </nav>
         </div>
@@ -105,6 +106,41 @@
             
             <div class="modal__body" id="modalBody">
                 <!-- Contenuto dinamico -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per profilo utente -->
+    <div class="modal" id="profileModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 class="modal__title">Impostazioni Profilo</h2>
+                <button class="modal__close" id="profileModalClose">×</button>
+            </div>
+            
+            <div class="modal__body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="emailConsent" style="margin-right: 0.5rem;">
+                            Voglio ricevere email sulle nuove offerte
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="emailGroup" style="display: none;">
+                        <label for="userEmail" class="form-label">Indirizzo Email</label>
+                        <input type="email" id="userEmail" class="form-input" placeholder="inserisci@email.com">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn--secondary" id="profileCancelBtn">Annulla</button>
+                        <button type="submit" class="btn btn--primary">
+                            <span class="btn__text">Salva</span>
+                            <div class="spinner spinner--hidden"></div>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

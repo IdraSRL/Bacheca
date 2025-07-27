@@ -75,13 +75,15 @@
 .admin-section__header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: var(--space-4);
     margin-bottom: var(--space-8);
     padding-bottom: var(--space-4);
     border-bottom: var(--border-width) solid var(--border-primary);
+    flex-wrap: wrap;
 }
 
 .admin-section__title {
+    flex: 1;
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);

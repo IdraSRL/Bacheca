@@ -22,6 +22,8 @@ class Dashboard {
         this.filteredJobs = [];
         this.filteredServices = [];
         
+        this.userProfile = null;
+        
         this.init();
     }
 
@@ -30,6 +32,7 @@ class Dashboard {
         if (!requireClient()) return;
 
         try {
+            await this.loadUserProfile();
             await this.loadData();
             this.initEventListeners();
             this.renderCurrentTab();
@@ -38,6 +41,17 @@ class Dashboard {
         } catch (error) {
             console.error('Dashboard initialization error:', error);
             showToast('Errore durante il caricamento', 'error');
+        }
+    }
+
+    async loadUserProfile() {
+        try {
+            const username = sessionService.getUsername();
+            if (username) {
+                this.userProfile = await firebaseService.getUserByUsername(username);
+            }
+        } catch (error) {
+            console.error('Error loading user profile:', error);
         }
     }
 
@@ -146,6 +160,42 @@ class Dashboard {
                 e.target.classList.add('category-tab--active');
             }
         });
+
+        // Profile button
+        const profileBtn = document.getElementById('profileBtn');
+        if (profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                this.showProfileModal();
+            });
+        }
+
+        // Profile form
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', (e) => {
+                this.handleProfileFormSubmit(e);
+            });
+        }
+
+        // Email consent checkbox
+        const emailConsent = document.getElementById('emailConsent');
+        const emailGroup = document.getElementById('emailGroup');
+        if (emailConsent && emailGroup) {
+            emailConsent.addEventListener('change', (e) => {
+                emailGroup.style.display = e.target.checked ? 'block' : 'none';
+                if (!e.target.checked) {
+                    document.getElementById('userEmail').value = '';
+                }
+            });
+        }
+
+        // Profile cancel button
+        const profileCancelBtn = document.getElementById('profileCancelBtn');
+        if (profileCancelBtn) {
+            profileCancelBtn.addEventListener('click', () => {
+                hideModal('profileModal');
+            });
+        }
     }
 
     populateCategoryFilters() {
@@ -354,6 +404,68 @@ class Dashboard {
             const card = createCard(item, type, isFavorite);
             container.appendChild(card);
         });
+    }
+
+    showProfileModal() {
+        const emailConsent = document.getElementById('emailConsent');
+        const userEmail = document.getElementById('userEmail');
+        const emailGroup = document.getElementById('emailGroup');
+
+        if (this.userProfile) {
+            emailConsent.checked = this.userProfile.emailConsent || false;
+            userEmail.value = this.userProfile.email || '';
+            emailGroup.style.display = this.userProfile.emailConsent ? 'block' : 'none';
+        }
+
+        showModal('profileModal');
+    }
+
+    async handleProfileFormSubmit(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        const emailConsent = document.getElementById('emailConsent').checked;
+        const userEmail = document.getElementById('userEmail').value.trim();
+
+        if (emailConsent && !userEmail) {
+            showToast('Inserisci un indirizzo email valido', 'warning');
+            return;
+        }
+
+        if (emailConsent && !this.isValidEmail(userEmail)) {
+            showToast('Inserisci un indirizzo email valido', 'warning');
+            return;
+        }
+
+        toggleButtonLoading(submitBtn, true);
+
+        try {
+            await firebaseService.updateUserEmailSettings(
+                this.userProfile.id,
+                emailConsent,
+                userEmail
+            );
+
+            // Update local profile
+            this.userProfile.emailConsent = emailConsent;
+            this.userProfile.email = emailConsent ? userEmail : '';
+
+            showToast('Impostazioni salvate con successo', 'success');
+            hideModal('profileModal');
+            
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            showToast('Errore durante il salvataggio', 'error');
+        } finally {
+            toggleButtonLoading(submitBtn, false);
+        }
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 }
 

@@ -51,6 +51,7 @@
                 <div class="admin-section__header">
                     <h2 class="admin-section__title">Gestione Utenti</h2>
                     <button class="btn btn--primary" id="addUserBtn">Aggiungi Utente</button>
+                    <button class="btn btn--success" id="sendEmailBtn">Invia nuove offerte via email</button>
                 </div>
                 
                 <div class="admin-table-container">
@@ -59,6 +60,7 @@
                             <tr>
                                 <th>Username</th>
                                 <th>Ruolo</th>
+                                <th>Email Consenso</th>
                                 <th>Data Creazione</th>
                                 <th>Azioni</th>
                             </tr>
@@ -133,6 +135,48 @@
             
             <div class="modal__body" id="formModalBody">
                 <!-- Contenuto dinamico -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per invio email -->
+    <div class="modal" id="emailModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 class="modal__title">Invia Email Nuove Offerte</h2>
+                <button class="modal__close" id="emailModalClose">×</button>
+            </div>
+            
+            <div class="modal__body">
+                <div id="emailPreview" style="margin-bottom: 1rem;">
+                    <p><strong>Destinatari:</strong> <span id="recipientCount">0</span> utenti</p>
+                    <p><strong>Oggetto:</strong> Nuove offerte disponibili</p>
+                </div>
+                
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label for="emailMessage" class="form-label">Messaggio Email</label>
+                        <textarea id="emailMessage" class="form-textarea" style="min-height: 150px;" required>Ciao!
+
+Abbiamo nuove offerte di lavoro e servizi disponibili sulla nostra bacheca.
+
+Accedi al tuo account per visualizzare tutte le nuove opportunità:
+[LINK_DASHBOARD]
+
+Grazie per essere parte della nostra community!
+
+Il team di Bacheca Annunci Pro</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn--secondary" id="emailCancelBtn">Annulla</button>
+                        <button type="submit" class="btn btn--primary">
+                            <span class="btn__text">Invia Email</span>
+                            <div class="spinner spinner--hidden"></div>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
