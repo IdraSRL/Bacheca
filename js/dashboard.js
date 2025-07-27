@@ -2,7 +2,7 @@ import { requireClient, logout } from './utils/auth.js';
 import sessionService from './services/session.js';
 import firebaseService from './services/firebase.js';
 import favoritesModule from './modules/favorites.js';
-import { showToast, debounce, createCard, initUI, createSkeletonCards } from './utils/ui.js';
+import { showToast, debounce, createCard, initUI, createSkeletonCards, showModal, hideModal, toggleButtonLoading } from './utils/ui.js';
 
 /**
  * Dashboard Module - Client Interface

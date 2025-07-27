@@ -79,10 +79,10 @@
     --color-neutral-900: #f7fafc;
 
     /* Background Colors */
-    --bg-primary: var(--color-neutral-50);
-    --bg-secondary: var(--color-neutral-100);
-    --bg-tertiary: var(--color-neutral-200);
-    --bg-card: var(--color-neutral-100);
+    --bg-primary: #0f0f23;
+    --bg-secondary: #1a1b2e;
+    --bg-tertiary: #16213e;
+    --bg-card: #1e2139;
     --bg-modal: rgba(15, 15, 35, 0.95);
 
     /* Text Colors */
@@ -137,11 +137,11 @@
     --border-radius-full: 9999px;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 16px -2px rgba(0, 0, 0, 0.3), 0 4px 8px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 20px 30px -6px rgba(0, 0, 0, 0.4), 0 8px 16px -4px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 40px 60px -10px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.4);
 
     /* Transitions */
     --transition-fast: 150ms ease-out;
