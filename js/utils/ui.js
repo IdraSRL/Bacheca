@@ -231,6 +231,45 @@ export function createCard(item, type = 'job', isFavorite = false) {
 }
 
 /**
+ * Create card element for public pages (no favorites)
+ * @param {Object} item - Item data
+ * @param {string} type - Type of item (job, service)
+ * @returns {HTMLElement} - Card element
+ */
+export function createPublicCard(item, type = 'job') {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = item.id;
+    card.dataset.type = type;
+
+    const imageUrl = item.images && item.images.length > 0 
+        ? `uploads/${item.images[0]}` 
+        : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+
+    card.innerHTML = `
+        <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
+        <div class="card__content">
+            <h3 class="card__title">${sanitizeHTML(item.title || '')}</h3>
+            <p class="card__description">${truncateText(sanitizeHTML(item.description || ''), 80)}</p>
+            ${item.code ? `<div class="card__code">Cod: ${sanitizeHTML(item.code)}</div>` : ''}
+            <div class="card__meta">
+                <span class="card__price">${formatPrice(item.price || 0)}</span>
+                <div class="card__location" style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                    📍 ${sanitizeHTML(item.location || 'Non specificato')}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add click handler for card
+    card.addEventListener('click', () => {
+        showItemDetails(item, type);
+    });
+
+    return card;
+}
+
+/**
  * Show item details in modal
  * @param {Object} item - Item data
  * @param {string} type - Type of item

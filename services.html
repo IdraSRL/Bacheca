@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servizi Disponibili - Bacheca Annunci Pro</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/public.css">
+</head>
+<body class="public-page">
+    <header class="header">
+        <div class="header__content">
+            <div class="header__brand">
+                <h1 class="header__title">Bacheca Annunci Pro</h1>
+                <p class="header__subtitle">Servizi Professionali</p>
+            </div>
+            
+            <nav class="header__nav">
+                <a href="jobs.html" class="btn btn--secondary">Offerte di Lavoro</a>
+                <a href="index.html" class="btn btn--primary">Accedi</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="hero-section">
+            <div class="hero-section__content">
+                <h2 class="hero-section__title">Trova il Servizio che Cerchi</h2>
+                <p class="hero-section__description">
+                    Scopri tutti i servizi professionali disponibili nella nostra bacheca. 
+                    Dai servizi informatici alle riparazioni, trova quello che fa per te.
+                </p>
+            </div>
+        </div>
+        
+        <div class="filters-section">
+            <div class="filters-section__content">
+                <div class="search-bar">
+                    <input type="text" class="search-bar__input" id="searchInput" placeholder="Cerca servizi...">
+                    <button class="search-bar__button" id="searchBtn">
+                        <span class="search-bar__icon">🔍</span>
+                    </button>
+                </div>
+                
+                <div class="filters">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">Tutte le categorie</option>
+                    </select>
+                    
+                    <select class="filter-select" id="priceFilter">
+                        <option value="">Tutti i prezzi</option>
+                        <option value="0-50">€0 - €50</option>
+                        <option value="50-100">€50 - €100</option>
+                        <option value="100-200">€100 - €200</option>
+                        <option value="200+">€200+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="category-tabs" id="categoryTabs"></div>
+            
+            <div class="listings-grid" id="servicesGrid">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+            
+            <div class="cta-section">
+                <div class="cta-card">
+                    <h3 class="cta-card__title">Vuoi pubblicare il tuo servizio?</h3>
+                    <p class="cta-card__description">
+                        Registrati per accedere al pannello completo e pubblicare i tuoi servizi
+                    </p>
+                    <a href="index.html" class="btn btn--primary btn--large">Accedi al Pannello</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal per dettagli servizio -->
+    <div class="modal" id="detailModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 class="modal__title" id="modalTitle"></h2>
+                <button class="modal__close" id="modalClose">×</button>
+            </div>
+            
+            <div class="modal__body" id="modalBody">
+                <!-- Contenuto dinamico -->
+            </div>
+            
+            <div class="modal__footer">
+                <div class="contact-info">
+                    <p><strong>Interessato a questo servizio?</strong></p>
+                    <a href="index.html" class="btn btn--primary">Accedi per Contattare</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer__content">
+            <div class="footer__section">
+                <h4>Bacheca Annunci Pro</h4>
+                <p>La piattaforma professionale per servizi e offerte di lavoro</p>
+            </div>
+            <div class="footer__section">
+                <h4>Link Utili</h4>
+                <ul>
+                    <li><a href="services.html">Servizi</a></li>
+                    <li><a href="jobs.html">Offerte di Lavoro</a></li>
+                    <li><a href="index.html">Accedi</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; 2024 Bacheca Annunci Pro. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script type="module" src="js/public-services.js"></script>
+</body>
+</html>
