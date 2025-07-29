@@ -33,6 +33,10 @@ $allowedTypes = [
     'image/webp' => 'webp'
 ];
 
+// Add .htaccess to uploads directory for security
+$htaccessContent = "Options -Indexes\n<Files ~ \"\\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$\">\n    deny from all\n</Files>";
+$htaccessPath = $uploadDir . '.htaccess';
+
 // Create upload directory if it doesn't exist
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0755, true)) {
@@ -40,6 +44,11 @@ if (!is_dir($uploadDir)) {
         echo json_encode(['success' => false, 'error' => 'Failed to create upload directory']);
         exit();
     }
+    // Create .htaccess for security
+    file_put_contents($htaccessPath, $htaccessContent);
+} elseif (!file_exists($htaccessPath)) {
+    // Create .htaccess if it doesn't exist
+    file_put_contents($htaccessPath, $htaccessContent);
 }
 
 // Check if file was uploaded

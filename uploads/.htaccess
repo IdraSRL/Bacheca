@@ -1,0 +1,4 @@
+Options -Indexes
+<Files ~ "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    deny from all
+</Files>

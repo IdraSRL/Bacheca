@@ -340,7 +340,9 @@ class AdminPanel {
 
         container.innerHTML = items.map(item => {
             const category = this.categories.find(cat => cat.id === item.categoryId);
-            const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
+            const imageUrl = item.images && item.images.length > 0 
+                ? `uploads/${item.images[0]}` 
+                : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
 
             return `
                 <div class="card">
@@ -908,18 +910,16 @@ class AdminPanel {
             removeBtn.innerHTML = '×';
             removeBtn.type = 'button';
             removeBtn.addEventListener('click', () => {
+                // Revoke object URL to free memory
+                URL.revokeObjectURL(img.src);
                 previewItem.remove();
             });
 
             previewItem.appendChild(img);
             previewItem.appendChild(removeBtn);
             previewItem.dataset.file = file.name;
-            previewItem.dataset.fileObject = JSON.stringify({
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                lastModified: file.lastModified
-            });
+            // Store the actual file object for upload
+            previewItem._fileObject = file;
             
             preview.appendChild(previewItem);
         }
@@ -1053,22 +1053,50 @@ class AdminPanel {
         const imageItems = preview.querySelectorAll('.image-preview__item');
         const images = [];
         
-        imageItems.forEach(item => {
+        for (const item of imageItems) {
             if (item.dataset.existing) {
                 // Existing image
                 images.push(item.dataset.existing);
-            } else if (item.dataset.file) {
-                // New image - in a real implementation, you would upload to server
-                // For now, we'll use a placeholder name
-                const fileName = `uploaded_${Date.now()}_${item.dataset.file}`;
-                images.push(fileName);
+            } else if (item._fileObject) {
+                // New image - upload to server
+                try {
+                    const file = item._fileObject;
+                    
+                    // Create FormData for upload
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    
+                    // Upload to server
+                    const uploadResponse = await fetch('./php/upload.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!uploadResponse.ok) {
+                        throw new Error(`HTTP error! status: ${uploadResponse.status}`);
+                    }
+                    
+                    const uploadResult = await uploadResponse.json();
+                    
+                    if (uploadResult.success) {
+                        images.push(uploadResult.filename);
+                        
+                        // Clean up object URL
+                        const img = item.querySelector('.image-preview__img');
+                        URL.revokeObjectURL(img.src);
+                    } else {
+                        console.error('Upload failed:', uploadResult.error);
+                        showToast(`Errore caricamento immagine: ${uploadResult.error}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    showToast('Errore durante il caricamento dell\'immagine', 'error');
+                }
             }
-        });
+        }
         
         return images;
     }
-
-    // Removed uploadImage method since we're not using PHP uploads
 
     // Delete Methods
     async deleteUser(userId) {

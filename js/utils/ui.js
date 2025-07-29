@@ -200,7 +200,9 @@ export function createCard(item, type = 'job', isFavorite = false) {
     card.dataset.id = item.id;
     card.dataset.type = type;
 
-    const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'default.png';
+    const imageUrl = item.images && item.images.length > 0 
+        ? `uploads/${item.images[0]}` 
+        : 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg';
 
     card.innerHTML = `
         <img src="${imageUrl}" alt="${item.title}" class="card__image" loading="lazy">
@@ -291,9 +293,10 @@ export function showItemDetails(item, type) {
  */
 function createImageCarousel(images, title) {
     if (images.length === 1) {
+        const imageUrl = images[0].startsWith('http') ? images[0] : `uploads/${images[0]}`;
         return `
             <div class="modal-gallery">
-                <img src="${images[0]}" alt="${title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">
+                <img src="${imageUrl}" alt="${title}" style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem;">
             </div>
         `;
     }
@@ -304,10 +307,11 @@ function createImageCarousel(images, title) {
                 <div class="carousel-container">
                     <div class="carousel-track" id="carouselTrack">
                         ${images.map((img, index) => `
+                            const imageUrl = img.startsWith('http') ? img : `uploads/${img}`;
                             <div class="carousel-slide ${index === 0 ? 'carousel-slide--active' : ''}">
-                                <img src="${img}" alt="${title}" loading="lazy">
+                                <img src="${imageUrl}" alt="${title}" loading="lazy">
                             </div>
-                        `).join('')}
+                        `;}).join('')}
                     </div>
                     ${images.length > 1 ? `
                         <button class="carousel-btn carousel-btn--prev" id="carouselPrev">‹</button>
