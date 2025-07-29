@@ -307,7 +307,7 @@ function createImageCarousel(images, title) {
                 <div class="carousel-container">
                     <div class="carousel-track" id="carouselTrack">
                         ${images.map((img, index) => `
-                            const imageUrl = img.startsWith('http') ? img : `uploads/${img}`;
+                            const imageUrl = img.startsWith('http') ? img : \`uploads/${img}`;
                             <div class="carousel-slide ${index === 0 ? 'carousel-slide--active' : ''}">
                                 <img src="${imageUrl}" alt="${title}" loading="lazy">
                             </div>
@@ -329,6 +329,7 @@ function createImageCarousel(images, title) {
             </div>
         </div>
     `;
+    )
 }
 
 /**
@@ -357,7 +358,7 @@ function initImageCarousel() {
         });
         
         // Update track position
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        track.style.transform = \`translateX(-${currentSlide * 100}%)`;
     }
     
     function nextSlide() {
